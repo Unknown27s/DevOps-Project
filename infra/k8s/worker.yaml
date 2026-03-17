@@ -1,0 +1,65 @@
+# ── Worker Deployment (Scalable) ──
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: ai-task-platform
+  labels:
+    app: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: yourdockerhubuser/ai-task-worker:latest
+          envFrom:
+            - configMapRef:
+                name: app-config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          # Worker doesn't expose HTTP, use exec probe
+          livenessProbe:
+            exec:
+              command: ["python", "-c", "import redis; r = redis.Redis(host='redis-service'); r.ping()"]
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command: ["python", "-c", "import redis; r = redis.Redis(host='redis-service'); r.ping()"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      restartPolicy: Always
+---
+# ── HPA for Worker Auto-scaling ──
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: worker-hpa
+  namespace: ai-task-platform
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: worker
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

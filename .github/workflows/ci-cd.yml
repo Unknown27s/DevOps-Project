@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: backend/package-lock.json
           working-directory: backend
 
       - name: Lint Backend

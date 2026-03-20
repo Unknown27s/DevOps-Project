@@ -69,7 +69,6 @@ OPERATIONS = {
 }
 
 
-}
 
 
 def add_log(collection, task_id, message, level='info'):

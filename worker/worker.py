@@ -34,11 +34,14 @@ signal.signal(signal.SIGTERM, signal_handler)
 def process_uppercase(text):
     return text.upper()
 
+
 def process_lowercase(text):
     return text.lower()
 
+
 def process_reverse(text):
     return text[::-1]
+
 
 def process_word_count(text):
     words = text.split()
@@ -63,6 +66,9 @@ OPERATIONS = {
     'lowercase': process_lowercase,
     'reverse': process_reverse,
     'word_count': process_word_count
+}
+
+
 }
 
 

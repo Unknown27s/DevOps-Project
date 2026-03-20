@@ -69,8 +69,6 @@ OPERATIONS = {
 }
 
 
-
-
 def add_log(collection, task_id, message, level='info'):
     """Add a log entry to the task."""
     collection.update_one(

@@ -22,10 +22,12 @@ QUEUE_NAME = 'task_queue'
 # ── Graceful Shutdown ──
 running = True
 
+
 def signal_handler(sig, frame):
     global running
     print(f"\n🛑 Received signal {sig}. Shutting down gracefully...")
     running = False
+
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
@@ -35,11 +37,14 @@ signal.signal(signal.SIGTERM, signal_handler)
 def process_uppercase(text):
     return text.upper()
 
+
 def process_lowercase(text):
     return text.lower()
 
+
 def process_reverse(text):
     return text[::-1]
+
 
 def process_word_count(text):
     words = text.split()
@@ -58,6 +63,7 @@ def process_word_count(text):
         'top_words': dict(sorted(word_freq.items(), key=lambda x: x[-1], reverse=True)[:10])
     }
     return json.dumps(result, indent=2)
+
 
 OPERATIONS = {
     'uppercase': process_uppercase,
